@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quilt Generator Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Quilt Generator Pro</h1>
+        <p class="subtitle">Convert images into a Looking Glass quilt layout</p>
+
+        <div class="settings-grid">
+            <div class="setting">
+                <label for="cols">Columns</label>
+                <input type="number" id="cols" value="11" min="1" max="50">
+            </div>
+            <div class="setting">
+                <label for="rows">Rows</label>
+                <input type="number" id="rows" value="6" min="1" max="50">
+            </div>
+            <div class="setting">
+                <label for="scale">Scale</label>
+                <input type="number" id="scale" value="0.8" min="0.1" max="1.0" step="0.05">
+            </div>
+            <div class="setting">
+                <label for="sections">Sections <button type="button" class="help-toggle" aria-expanded="false" aria-controls="sectionsHelp">?</button></label>
+                <input type="number" id="sections" value="1" min="1" max="3">
+            </div>
+            <div class="setting">
+                <label for="deviceW">Device Width (px)</label>
+                <input type="number" id="deviceW" value="1440" min="1">
+            </div>
+            <div class="setting">
+                <label for="deviceH">Device Height (px)</label>
+                <input type="number" id="deviceH" value="2560" min="1">
+            </div>
+            <div class="setting checkbox-setting">
+                <label for="invertOrder">
+                    <input type="checkbox" id="invertOrder">
+                    Invert Order
+                </label>
+            </div>
+        </div>
+
+        <div id="sectionsHelp" class="help-panel" hidden>
+            <p><strong>Sections</strong> split each source image into vertical strips, each cropped to your device's aspect ratio. This is used for side-by-side Looking Glass displays where one wide image is divided into separate quilt files.</p>
+            <ul>
+                <li><strong>1 section</strong> — Single quilt output (standard)</li>
+                <li><strong>2 sections</strong> — Two vertical strips → two quilt files</li>
+                <li><strong>3 sections</strong> — Three vertical strips → three quilt files</li>
+            </ul>
+            <img src="sections-diagram.svg" alt="Diagram showing how 2 and 3 sections divide a source image into vertical strips, each producing a separate quilt" class="help-diagram">
+        </div>
+
+        <div id="dropzone" class="dropzone">
+            <p>Drop PNG images here or click to select</p>
+            <p class="hint">Images will be sorted by filename</p>
+            <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" multiple hidden>
+        </div>
+
+        <div id="fileInfo" class="file-info" hidden>
+            <span id="fileCount"></span> images loaded
+            <span id="selectedCount"></span>
+        </div>
+
+        <button id="generateBtn" class="generate-btn" disabled>Generate Quilt</button>
+
+        <div id="progress" class="progress" hidden>
+            <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+            <span id="progressText">Processing...</span>
+        </div>
+
+        <div id="output" class="output" hidden>
+            <h2>Output</h2>
+            <div id="outputSections"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
