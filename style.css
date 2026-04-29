@@ -113,18 +113,19 @@ h1 {
 }
 
 .dropzone {
-    border: 2px dashed #333;
+    border: 2px solid #333;
     border-radius: 12px;
-    padding: 3rem 2rem;
+    padding: 2rem;
     text-align: center;
     cursor: pointer;
     transition: border-color 0.2s, background 0.2s;
     margin-bottom: 1rem;
+    background: #16213e;
 }
 
-.dropzone:hover, .dropzone.dragover {
+.dropzone:hover {
     border-color: #537ec5;
-    background: rgba(83, 126, 197, 0.05);
+    background: rgba(83, 126, 197, 0.08);
 }
 
 .dropzone p {

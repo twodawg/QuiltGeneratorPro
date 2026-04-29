@@ -12,7 +12,7 @@ The app runs entirely in the browser — no server, no Node.js, no dependencies.
 
 1. Open the app in a browser
 2. Configure the settings for your target device
-3. Drop your source images (PNG/JPEG/WebP) onto the drop zone
+3. Click the folder selector and choose a folder containing your source images (PNG/JPEG/WebP)
 4. Click **Generate Quilt**
 5. Download the resulting quilt PNG(s)
 
@@ -80,16 +80,17 @@ Reverses the sequence in which source frames are assigned to quilt positions. En
 The app generates one or more PNG quilt images (one per section). Each output file is named:
 
 ```
-quilt[_s{N}of{total}]_qs{cols}x{rows}a{aspect}.png
+{image_name}[_s{N}of{total}]_qs{cols}x{rows}a{aspect}.png
 ```
 
 | Component | Meaning |
 |-----------|---------|
+| `{image_name}` | Base name of the first imported image (without extension) |
 | `_s{N}of{total}` | Section number (omitted if sections = 1) |
 | `qs{cols}x{rows}` | Grid dimensions |
 | `a{aspect}` | Aspect ratio of each tile (width/height, 4 decimal places) |
 
-**Example:** `quilt_s2of3_qs11x6a0.5625.png` — section 2 of 3, 11×6 grid, 9:16 aspect tiles.
+**Example:** If the first image is `animation_001.png`, outputs would be `animation_001_s2of3_qs11x6a0.5625.png` — section 2 of 3, 11×6 grid, 9:16 aspect tiles.
 
 ### Quilt Layout
 

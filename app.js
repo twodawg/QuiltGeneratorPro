@@ -14,6 +14,7 @@
     const outputSections = document.getElementById("outputSections");
 
     let loadedFiles = []; // sorted File objects
+let folderName = ""; // folder name from selected folder
 
     // --- Help toggle ---
     const helpToggle = document.querySelector(".help-toggle");
@@ -27,16 +28,6 @@
     // --- File handling ---
 
     dropzone.addEventListener("click", () => fileInput.click());
-    dropzone.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        dropzone.classList.add("dragover");
-    });
-    dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
-    dropzone.addEventListener("drop", (e) => {
-        e.preventDefault();
-        dropzone.classList.remove("dragover");
-        handleFiles(e.dataTransfer.files);
-    });
     fileInput.addEventListener("change", () => handleFiles(fileInput.files));
 
     function handleFiles(fileList) {
@@ -44,6 +35,13 @@
         if (files.length === 0) return;
         files.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
         loadedFiles = files;
+    
+        // Extract folder name from webkitRelativePath
+        if (files[0].webkitRelativePath) {
+            const pathParts = files[0].webkitRelativePath.split("/");
+            folderName = pathParts[0];
+        }
+    
         updateFileInfo();
         generateBtn.disabled = false;
     }
@@ -153,8 +151,9 @@
                 const quiltCanvas = createQuiltImage(sectionImages, cols, rows, scale);
 
                 // Build output filename
+                const baseName = folderName || getBaseName(loadedFiles[0].name);
                 const sectionSuffix = sections > 1 ? `_s${sec + 1}of${sections}` : "";
-                const filename = `quilt${sectionSuffix}_qs${cols}x${rows}a${asp.toFixed(4)}.png`;
+                const filename = `${baseName}${sectionSuffix}_qs${cols}x${rows}a${asp.toFixed(4)}.png`;
 
                 addOutputSection(quiltCanvas, filename, asp, sec + 1, sections, warnings);
 
@@ -174,6 +173,10 @@
     }
 
     // --- Image utilities ---
+
+    function getBaseName(filename) {
+        return filename.replace(/\.[^.]+$/, '');
+    }
 
     function loadImage(file) {
         return new Promise((resolve, reject) => {
