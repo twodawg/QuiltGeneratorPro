@@ -103,17 +103,6 @@ If the source images are too narrow to fit all section strips at the device aspe
 
 ---
 
-## Hosting on GitHub Pages
-
-1. Push this repository to GitHub
-2. Go to **Settings → Pages**
-3. Set source to the branch/folder containing `index.html`
-4. The app will be available at `https://<user>.github.io/<repo>/`
-
-No build step required.
-
----
-
 ## Common Device Presets
 
 | Device | Width | Height | Typical Quilt |
