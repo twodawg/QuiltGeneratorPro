@@ -48,6 +48,89 @@ h1 {
     font-size: 1rem;
 }
 
+.zoom-anchor-setting {
+    grid-column: 1 / -1;
+}
+
+.zoom-anchor-ui {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+}
+
+.zoom-anchor-scale {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #7d8aa8;
+}
+
+.zoom-anchor-setting input[type="range"] {
+    width: 100%;
+    accent-color: #537ec5;
+}
+
+.zoom-anchor-preview {
+    margin-top: 0.55rem;
+    height: 130px;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #2a3a5e;
+    background: linear-gradient(to bottom, #3a588f 0%, #486aa7 35%, #29446f 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.zoom-anchor-image {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: auto;
+    height: 100%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.18s ease;
+}
+
+.zoom-anchor-image.has-image {
+    opacity: 1;
+}
+
+.zoom-anchor-preview::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.05) 0,
+        rgba(255, 255, 255, 0.05) 1px,
+        rgba(0, 0, 0, 0) 1px,
+        rgba(0, 0, 0, 0) 16px
+    );
+}
+
+.zoom-anchor-indicator {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-top: 2px solid #f0f7ff;
+    border-bottom: 2px solid #f0f7ff;
+    background: rgba(240, 247, 255, 0.14);
+    box-shadow: 0 0 0 1px rgba(12, 23, 44, 0.8) inset;
+}
+
+.zoom-anchor-label {
+    margin-top: 0.45rem;
+    font-size: 0.78rem;
+    color: #9faecc;
+}
+
 .checkbox-setting label {
     display: flex;
     align-items: center;

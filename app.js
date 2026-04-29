@@ -12,9 +12,14 @@
     const progressText = document.getElementById("progressText");
     const output = document.getElementById("output");
     const outputSections = document.getElementById("outputSections");
+    const zoomAnchor = document.getElementById("zoomAnchor");
+    const zoomAnchorLabel = document.getElementById("zoomAnchorLabel");
+    const zoomAnchorIndicator = document.getElementById("zoomAnchorIndicator");
+    const zoomAnchorImage = document.getElementById("zoomAnchorImage");
 
     let loadedFiles = []; // sorted File objects
-let folderName = ""; // folder name from selected folder
+    let folderName = ""; // folder name from selected folder
+    let previewObjectUrl = "";
 
     // --- Help toggle ---
     const helpToggle = document.querySelector(".help-toggle");
@@ -41,9 +46,21 @@ let folderName = ""; // folder name from selected folder
             const pathParts = files[0].webkitRelativePath.split("/");
             folderName = pathParts[0];
         }
+
+        updateZoomAnchorPreviewImage(files[0]);
     
         updateFileInfo();
         generateBtn.disabled = false;
+    }
+
+    function updateZoomAnchorPreviewImage(file) {
+        if (previewObjectUrl) {
+            URL.revokeObjectURL(previewObjectUrl);
+            previewObjectUrl = "";
+        }
+        previewObjectUrl = URL.createObjectURL(file);
+        zoomAnchorImage.src = previewObjectUrl;
+        zoomAnchorImage.classList.add("has-image");
     }
 
     function updateFileInfo() {
@@ -60,8 +77,18 @@ let folderName = ""; // folder name from selected folder
     function getInt(id) { return parseInt(document.getElementById(id).value, 10); }
     function getFloat(id) { return parseFloat(document.getElementById(id).value); }
 
+    function updateZoomAnchorUI() {
+        const value = Number(zoomAnchor.value);
+        const labels = ["Top", "Upper", "Center", "Lower", "Bottom"];
+        const idx = Math.min(4, Math.max(0, Math.round(value * 4)));
+        zoomAnchorLabel.textContent = `${labels[idx]} (${value.toFixed(2)})`;
+        zoomAnchorIndicator.style.top = `${value * 100}%`;
+    }
+
     document.getElementById("cols").addEventListener("input", updateFileInfo);
     document.getElementById("rows").addEventListener("input", updateFileInfo);
+    zoomAnchor.addEventListener("input", updateZoomAnchorUI);
+    updateZoomAnchorUI();
 
     // --- Generate ---
 
@@ -74,6 +101,7 @@ let folderName = ""; // folder name from selected folder
         const sections = getInt("sections");
         const deviceW = getFloat("deviceW");
         const deviceH = getFloat("deviceH");
+        const zoomAnchorY = Number(zoomAnchor.value);
         const invertOrder = document.getElementById("invertOrder").checked;
         const totalNeeded = cols * rows;
 
@@ -132,11 +160,11 @@ let folderName = ""; // folder name from selected folder
             if (cropOffsetX < 0) {
                 const zoomFactor = imgW / totalCropW;
                 croppedImgH = Math.round(imgH * zoomFactor);
-                cropY = Math.round((imgH - croppedImgH) / 2);
+                cropY = Math.round((imgH - croppedImgH) * zoomAnchorY);
                 secW = Math.round((deviceW / deviceH) * croppedImgH);
                 totalCropW = sections * secW;
                 cropOffsetX = Math.round((imgW - totalCropW) / 2);
-                warnings.push(`Source ${imgW}×${imgH} too narrow — auto zoom-out factor ${zoomFactor.toFixed(3)}, cropping to ${imgW}×${croppedImgH}`);
+                warnings.push(`Source ${imgW}×${imgH} too narrow — auto zoom-out factor ${zoomFactor.toFixed(3)}, framing ${zoomAnchorY.toFixed(2)}, cropping to ${imgW}×${croppedImgH}`);
             }
 
             // Generate each section

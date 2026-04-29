@@ -73,6 +73,17 @@ Reverses the sequence in which source frames are assigned to quilt positions. En
 
 - **Default:** Off (unchecked)
 
+### Zoom-Out Vertical Framing
+
+Controls where the crop sits vertically when **auto zoom-out** is required (when source images are too narrow for the requested sections/aspect).
+
+- **Range:** 0.00 to 1.00
+- **0.00:** Top of image
+- **0.50:** Center (default)
+- **1.00:** Bottom of image
+
+Use this to prioritize headroom or foreground detail. For example, set a lower value to keep more of the top area in frame.
+
 ---
 
 ## Output
@@ -100,7 +111,7 @@ The app generates one or more PNG quilt images (one per section). Each output fi
 
 ### Auto Zoom-Out
 
-If the source images are too narrow to fit all section strips at the device aspect ratio, the app automatically zooms out (reduces the effective crop height) so the full width is used. A warning is displayed with the zoom factor.
+If the source images are too narrow to fit all section strips at the device aspect ratio, the app automatically zooms out (reduces the effective crop height) so the full width is used. The crop can be shifted vertically using **Zoom-Out Vertical Framing**. A warning is displayed with the zoom factor and framing value.
 
 ---
 

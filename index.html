@@ -36,6 +36,22 @@
                 <label for="deviceH">Device Height (px)</label>
                 <input type="number" id="deviceH" value="2560" min="1">
             </div>
+            <div class="setting zoom-anchor-setting">
+                <label for="zoomAnchor">Auto Zoom-Out Vertical Crop Position (choose which part of the frame is kept: top, center, or bottom)</label>
+                <div class="zoom-anchor-ui">
+                    <div class="zoom-anchor-scale" aria-hidden="true">
+                        <span>Top</span>
+                        <span>Center</span>
+                        <span>Bottom</span>
+                    </div>
+                    <input type="range" id="zoomAnchor" min="0" max="1" step="0.01" value="0.5">
+                </div>
+                <div class="zoom-anchor-preview" aria-hidden="true">
+                    <img id="zoomAnchorImage" class="zoom-anchor-image" alt="First frame preview">
+                    <div id="zoomAnchorIndicator" class="zoom-anchor-indicator"></div>
+                </div>
+                <div id="zoomAnchorLabel" class="zoom-anchor-label">Center (0.50)</div>
+            </div>
             <div class="setting checkbox-setting">
                 <label for="invertOrder">
                     <input type="checkbox" id="invertOrder">
