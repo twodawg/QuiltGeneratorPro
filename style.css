@@ -52,6 +52,34 @@ h1 {
     grid-column: 1 / -1;
 }
 
+.single-wide-zoom-setting {
+    grid-column: 1 / -1;
+}
+
+.single-wide-zoom-ui {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+}
+
+.single-wide-zoom-scale {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #7d8aa8;
+}
+
+.single-wide-zoom-setting input[type="range"] {
+    width: 100%;
+    accent-color: #7ec850;
+}
+
+.single-wide-zoom-label {
+    margin-top: 0.45rem;
+    font-size: 0.78rem;
+    color: #9fc89a;
+}
+
 .zoom-anchor-ui {
     display: grid;
     grid-template-columns: 1fr;

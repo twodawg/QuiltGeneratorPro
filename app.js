@@ -12,6 +12,8 @@
     const progressText = document.getElementById("progressText");
     const output = document.getElementById("output");
     const outputSections = document.getElementById("outputSections");
+    const singleWideZoom = document.getElementById("singleWideZoom");
+    const singleWideZoomLabel = document.getElementById("singleWideZoomLabel");
     const zoomAnchor = document.getElementById("zoomAnchor");
     const zoomAnchorLabel = document.getElementById("zoomAnchorLabel");
     const zoomAnchorIndicator = document.getElementById("zoomAnchorIndicator");
@@ -77,6 +79,12 @@
     function getInt(id) { return parseInt(document.getElementById(id).value, 10); }
     function getFloat(id) { return parseFloat(document.getElementById(id).value); }
 
+    function updateSingleWideZoomUI() {
+        const value = Number(singleWideZoom.value);
+        const label = value <= 0 ? "Off" : value < 0.5 ? "Light" : value < 1 ? "Strong" : "Max Width";
+        singleWideZoomLabel.textContent = `${label} (${value.toFixed(2)})`;
+    }
+
     function updateZoomAnchorUI() {
         const value = Number(zoomAnchor.value);
         const labels = ["Top", "Upper", "Center", "Lower", "Bottom"];
@@ -87,6 +95,8 @@
 
     document.getElementById("cols").addEventListener("input", updateFileInfo);
     document.getElementById("rows").addEventListener("input", updateFileInfo);
+    singleWideZoom.addEventListener("input", updateSingleWideZoomUI);
+    updateSingleWideZoomUI();
     zoomAnchor.addEventListener("input", updateZoomAnchorUI);
     updateZoomAnchorUI();
 
@@ -101,6 +111,7 @@
         const sections = getInt("sections");
         const deviceW = getFloat("deviceW");
         const deviceH = getFloat("deviceH");
+        const wideZoomAmount = Number(singleWideZoom.value);
         const zoomAnchorY = Number(zoomAnchor.value);
         const invertOrder = document.getElementById("invertOrder").checked;
         const totalNeeded = cols * rows;
@@ -155,6 +166,8 @@
             let cropOffsetX = Math.round((imgW - totalCropW) / 2);
             let cropY = 0;
             let croppedImgH = imgH;
+            let outputSectionH = croppedImgH;
+            let useWideLetterbox = false;
             let warnings = [];
 
             if (cropOffsetX < 0) {
@@ -167,15 +180,31 @@
                 warnings.push(`Source ${imgW}×${imgH} too narrow — auto zoom-out factor ${zoomFactor.toFixed(3)}, framing ${zoomAnchorY.toFixed(2)}, cropping to ${imgW}×${croppedImgH}`);
             }
 
+            // Optional manual zoom-out for wide frames on a single display.
+            if (sections === 1 && cropOffsetX > 0 && wideZoomAmount > 0) {
+                const targetSecW = Math.round(secW + (imgW - secW) * wideZoomAmount);
+                secW = targetSecW;
+                cropOffsetX = Math.round((imgW - secW) / 2);
+                cropY = 0;
+                croppedImgH = imgH;
+                outputSectionH = Math.round(secW * (deviceH / deviceW));
+                useWideLetterbox = outputSectionH > imgH;
+                warnings.push(`Single-display wide zoom-out ${wideZoomAmount.toFixed(2)} — preserving more horizontal content with top/bottom letterbox.`);
+            }
+
             // Generate each section
             for (let sec = 0; sec < sections; sec++) {
                 setProgress(50 + (sec / sections) * 50, `Rendering section ${sec + 1}/${sections}...`);
 
-                const sectionImages = images.map((img) =>
-                    cropImage(img, cropOffsetX + sec * secW, cropY, secW, croppedImgH)
-                );
+                const sectionImages = images.map((img) => {
+                    const sectionX = cropOffsetX + sec * secW;
+                    if (useWideLetterbox) {
+                        return cropImageWithVerticalPad(img, sectionX, secW, outputSectionH);
+                    }
+                    return cropImage(img, sectionX, cropY, secW, croppedImgH);
+                });
 
-                const asp = secW / croppedImgH;
+                const asp = secW / (useWideLetterbox ? outputSectionH : croppedImgH);
                 const quiltCanvas = createQuiltImage(sectionImages, cols, rows, scale);
 
                 // Build output filename
@@ -224,6 +253,19 @@
         canvas.height = h;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
+        return canvas;
+    }
+
+    function cropImageWithVerticalPad(img, x, w, outputH) {
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = outputH;
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, w, outputH);
+
+        const drawY = Math.round((outputH - img.height) / 2);
+        ctx.drawImage(img, x, 0, w, img.height, 0, drawY, w, img.height);
         return canvas;
     }
 

@@ -55,6 +55,15 @@ Splits each source image into multiple vertical strips, producing one quilt file
 
 Each strip is centre-cropped to match the device's aspect ratio (Device Width ÷ Device Height). Click the **?** button next to the field to see a visual diagram.
 
+### Single Display Wide-Image Zoom-Out (sections = 1 only)
+
+Lets you preserve more horizontal content when exporting for a single display from very wide source frames.
+
+- **0.00 (Off):** Standard crop behavior
+- **1.00 (Max Width):** Keeps the widest possible horizontal content for one section
+
+This mode adds top/bottom letterbox padding as needed to maintain the target display aspect ratio while showing a wider slice of the source image.
+
 ### Device Width (px)
 
 The native pixel width of the target Looking Glass display. Used to calculate the correct aspect ratio for cropping each tile.
